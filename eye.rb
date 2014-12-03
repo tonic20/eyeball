@@ -48,7 +48,7 @@ def blink_green(s)
   Thread.new do
     color = [rand(127), rand(127)+127, rand(127)+127]
     black = [0, 0, 0]
-    2.times do
+    3.times do
       s.rgb(*color)
       sleep(0.3)
       s.rgb(*black)
