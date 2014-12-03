@@ -49,11 +49,12 @@ end
 def order_success(s)
   color = [rand(127), rand(127), rand(127)]
   s.rgb(*color.map{|c| c+127})
-  s.roll(10, 180)
-  sleep 1
-  s.rgb(*color.map{|c| c+63})
-  s.roll(1, 0)
-  sleep(0.9)
+  0.step(360, 30) do |i|
+    s.roll(0, i)
+    sleep 0.05
+  end
+  s.rgb(*color.map{|c| c})
+  sleep(0.5)
   s.rgb(0, 0, 0)
 end
 
