@@ -24,6 +24,16 @@ Thread.new do
   end
 end
 
+def blink_orange(s)
+  sleep(0.5)
+  3.times do
+    s.color("darkorange")
+    sleep(0.2)
+    s.color("black")
+    sleep(0.2)
+  end
+end
+
 def blink_red(s)
   Thread.new do
     red = [255, 0, 0]
@@ -78,6 +88,8 @@ socket['keep'].bind('order_processed') do |data|
   d = JSON.parse(data)
   d["success"] ? order_success(sphero) : order_failed(sphero)
 end
+
+blink_orange(sphero)
 
 socket.connect
 sphero.stop
