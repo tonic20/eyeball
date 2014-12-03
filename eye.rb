@@ -17,45 +17,56 @@ require 'json'
 port = `ls /dev/tty.Sphero*`.strip
 sphero = Sphero.new port
 
-Thread.new {
+Thread.new do
   loop do
     sphero.ping
     sleep 60
   end
-}
+end
 
 def blink_red(s)
-  red = [255, 0, 0]
-  black = [0, 0, 0]
-  s.rgb(*red)
-  sleep(0.3)
-  s.rgb(*black)
-  sleep(0.3)
-  s.rgb(*red)
-  sleep(0.3)
-  s.rgb(*black)
+  Thread.new do
+    red = [255, 0, 0]
+    black = [0, 0, 0]
+    10.times do
+      s.rgb(*red)
+      sleep(0.2)
+      s.rgb(*black)
+      sleep(0.2)
+    end
+  end
 end
 
 def order_failed(s)
-  s.roll(1, 0)
   blink_red(s)
   s.roll(1, 180)
-  blink_red(s)
-  blink_red(s)
+  sleep 1.2
   s.roll(1, 0)
-  blink_red(s)
+end
+
+def blink_green(s)
+  Thread.new do
+    color = [rand(127), rand(127)+127, rand(127)+127]
+    black = [0, 0, 0]
+    2.times do
+      s.rgb(*color)
+      sleep(0.3)
+      s.rgb(*black)
+      sleep(0.2)
+      s.rgb(*color)
+      sleep(0.5)
+      s.rgb(*black)
+      sleep(0.2)
+    end
+  end
 end
 
 def order_success(s)
-  color = [rand(127), rand(127), rand(127)]
-  s.rgb(*color.map{|c| c+127})
-  0.step(360, 30) do |i|
-    s.roll(0, i)
+  blink_green(s)
+  0.step(360*3, 20) do |i|
+    s.roll(0, i % 360)
     sleep 0.05
   end
-  s.rgb(*color.map{|c| c})
-  sleep(0.5)
-  s.rgb(0, 0, 0)
 end
 
 socket = PusherClient::Socket.new('ac98d9e6e2c6efc390b1')
